@@ -105,7 +105,7 @@ Errors are returned in the following json format:
 {
   "success": "False",
   "error": 422,
-  "message": "Unprocessable entity"
+  "message": "unprocessable"
 }
 ```
 
@@ -136,7 +136,8 @@ The error codes currently returned are:
     "5": "Entertainment",
     "6": "Sports"
   },
-  "success": true
+  "success": true,
+  "total_categories": 6
 }
 ```
 
@@ -237,7 +238,7 @@ The error codes currently returned are:
 }
 ```
 
-#### DELETE /questions/<int:question_id\>
+#### DELETE /questions/<int:question_id>
 
 - General:
 
@@ -248,6 +249,7 @@ The error codes currently returned are:
 ```json
 {
   "success": "True",
+  "deleted": 6,
   "message": "Question successfully deleted"
 }
 ```
@@ -262,8 +264,89 @@ The error codes currently returned are:
 
 ```json
 {
-  "message": "Question successfully created!",
-  "success": true
+  "message": "Question created successfully",
+  "success": true,
+  "total_questions": 20,
+  "created": 20
+  "question": [
+    {
+      "answer": "Tom Cruise",
+      "category": 5,
+      "difficulty": 4,
+      "id": 4,
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    },
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    },
+    {
+      "answer": "Uruguay",
+      "category": 6,
+      "difficulty": 4,
+      "id": 11,
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
+      "difficulty": 3,
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    },
+    {
+      "answer": "Agra",
+      "category": 3,
+      "difficulty": 2,
+      "id": 15,
+      "question": "The Taj Mahal is located in which Indian city?"
+    },
+    { 
+      "answer": "Namibia",
+      "category": "6",
+      "difficulty": 3,
+      "id": 20,
+      "question": "Frankie Fredericks represented which African country in athletics?",
+    }
+  ]
 }
 ```
 
@@ -273,17 +356,17 @@ The error codes currently returned are:
 
   - returns questions that has the search substring
 
-- Sample: `curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"searchTerm": "Anne Rice"}'`
+- Sample: `curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"searchTerm": "soccer World Cup"}'`
 
 ```json
 {
   "questions": [
     {
-      "answer": "Tom Cruise",
-      "category": 5,
-      "difficulty": 4,
-      "id": 4,
-      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+      "answer": "Brazil",
+      "category": 6,
+      "difficulty": 3,
+      "id": 10,
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
     }
   ],
   "success": true,
@@ -291,7 +374,7 @@ The error codes currently returned are:
 }
 ```
 
-#### GET /categories/<int:category_id\>/questions
+#### GET /categories/<int:category_id>/questions
 
 - General:
   - Gets questions by category using the id from the url parameter.
@@ -302,25 +385,25 @@ The error codes currently returned are:
   "current_category": "Science",
   "questions": [
     {
-      "answer": "The Liver",
-      "category": 1,
-      "difficulty": 4,
-      "id": 20,
-      "question": "What is the heaviest organ in the human body?"
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
     },
     {
-      "answer": "Alexander Fleming",
-      "category": 1,
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    },
+    {
+      "answer": "The Palace of Versailles",
+      "category": 3,
       "difficulty": 3,
-      "id": 21,
-      "question": "Who discovered penicillin?"
-    },
-    {
-      "answer": "Blood",
-      "category": 1,
-      "difficulty": 4,
-      "id": 22,
-      "question": "Hematology is a branch of medicine involving the study of what?"
+      "id": 14,
+      "question": "In which royal palace would you find the Hall of Mirrors?"
     }
   ],
   "success": true,
@@ -335,16 +418,16 @@ The error codes currently returned are:
   - Takes the category and previous questions in the request.
   - Return random question not in previous questions.
 
-- Sample: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [5, 9], "quiz_category": {"type": "History", "id": "4"}}'`
+- Sample: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [3, 7], "quiz_category": {"type": "Science", "id": "1"}}'`
 
 ```json
 {
   "question": {
-    "answer": "George Washington Carver",
+    "answer": "The Liver",
     "category": 4,
-    "difficulty": 2,
-    "id": 12,
-    "question": "Who invented Peanut Butter?"
+    "difficulty": 4,
+    "id": 20,
+    "question": "What is the heaviest organ in the human body?"
   },
   "success": true
 }
