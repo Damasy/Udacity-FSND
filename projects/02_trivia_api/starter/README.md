@@ -114,15 +114,22 @@ The error codes currently returned are:
 - 400 – bad request
 - 404 – resource not found
 - 422 – unprocessable
-- 500 – internal server error
+- 500 – An error has occurred, please try again
 
 ### Endpoints
+
+#### GET '/categories'
+#### GET ...
+#### POST ...
+#### DELETE ...
 
 #### GET /categories
 
 - General:
 
-  - Returns all the categories.
+  - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
+  - Request Arguments: None
+  - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs.
 
 - Sample: `curl http://127.0.0.1:5000/categories`
 
@@ -267,7 +274,7 @@ The error codes currently returned are:
   "message": "Question created successfully",
   "success": true,
   "total_questions": 20,
-  "created": 20
+  "created": 20,
   "question": [
     {
       "answer": "Tom Cruise",
@@ -433,8 +440,14 @@ The error codes currently returned are:
 }
 ```
 
+## Deployment
+
+- this app is not deployed yet, but soon it will be deployed via Heroku
+
 ## Authors
 
 - Ahmed Damasy worked on the API and test suite to integrate with the frontend
+
+## Acknowledgements
 
 - Udacity provided the starter files for the project including the frontend
