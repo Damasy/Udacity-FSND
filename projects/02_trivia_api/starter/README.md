@@ -118,11 +118,6 @@ The error codes currently returned are:
 
 ### Endpoints
 
-#### GET '/categories'
-#### GET ...
-#### POST ...
-#### DELETE ...
-
 #### GET /categories
 
 - General:
@@ -155,6 +150,8 @@ The error codes currently returned are:
   - Returns all questions
   - questions are in a paginated.
   - pages could be requested by a query string
+  - Request Arguments: query parameter (page)
+  - Returns: An object including categories, questions in the requested page and count of total questions.
 
 - Sample: `curl http://127.0.0.1:5000/questions`<br>
 
@@ -250,6 +247,8 @@ The error codes currently returned are:
 - General:
 
   - Deletes a question by id form the url parameter.
+  - Request Arguments: question id.
+  - Returns: An object including deleted question id and success message.
 
 - Sample: `curl http://127.0.0.1:5000/questions/6 -X DELETE`
 
@@ -266,6 +265,8 @@ The error codes currently returned are:
 - General:
 
   - Creates a new question based on a payload.
+  - Request Arguments: question payload.
+  - Returns: An object including creation success message, questions, created question id and total number of questions.
 
 - Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{ "question": "Frankie Fredericks represented which African country in athletics?", "answer": "Namibia", "difficulty": 3, "category": "6" }'`
 
@@ -362,6 +363,8 @@ The error codes currently returned are:
 - General:
 
   - returns questions that has the search substring
+  - Request Arguments: searchTerm as string.
+  - Returns: An object including questions meeting search term and total number of questions.
 
 - Sample: `curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"searchTerm": "soccer World Cup"}'`
 
@@ -385,6 +388,9 @@ The error codes currently returned are:
 
 - General:
   - Gets questions by category using the id from the url parameter.
+  - Request Arguments: category id.
+  - Returns: An object including category type, category questions and total number of questions.
+
 - Sample: `curl http://127.0.0.1:5000/categories/1/questions`<br>
 
 ```json
@@ -424,6 +430,9 @@ The error codes currently returned are:
 
   - Takes the category and previous questions in the request.
   - Return random question not in previous questions.
+  - Request Arguments: previous_questions which is array of previous questions and quiz_category which is
+  category object for the quiz questions.
+  - Returns: An object including random question.
 
 - Sample: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [3, 7], "quiz_category": {"type": "Science", "id": "1"}}'`
 
