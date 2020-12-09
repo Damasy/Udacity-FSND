@@ -81,7 +81,7 @@ def create_app(test_config=None):
 
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
-      
+
         try:
             question = Question.query.filter(
                 Question.id == question_id).one_or_none()
@@ -107,12 +107,12 @@ def create_app(test_config=None):
         try:
             new_question = Question(
                 question=question, answer=answer, difficulty=difficulty, category=category)
-            
+
             if ((question == '') or (answer == '')
-                or (difficulty == '') or (category == '')):
-              abort(422)
+                    or (difficulty == '') or (category == '')):
+                abort(422)
             else:
-              new_question.insert()
+                new_question.insert()
 
             questions = Question.query.order_by(Question.id).all()
             current_questions = paginate_questions(request, questions)
@@ -131,15 +131,15 @@ def create_app(test_config=None):
     @app.route('/questions/search', methods=['POST'])
     def search_questions():
         searchTerm = request.get_json().get('searchTerm', '')
-        
+
         if searchTerm == '':
-          abort(422)
+            abort(422)
         try:
 
             selection = Question.query.order_by(Question.id).filter(
                 Question.question.ilike(f'%{searchTerm}%')).all()
             current_questions = paginate_questions(request, selection)
-            
+
             if len(selection) == 0:
                 abort(404)
 
