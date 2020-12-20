@@ -1,3 +1,4 @@
+from os import environ
 import json
 from flask import request, _request_ctx_stack, abort
 from functools import wraps
@@ -5,9 +6,9 @@ from jose import jwt
 from urllib.request import urlopen
 
 
-AUTH0_DOMAIN = 'damasy.us.auth0.com'
+AUTH0_DOMAIN = environ.get('AUTHO0_DOMAIN', 'damasy.us.auth0.com')
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'cofferShop'
+API_AUDIENCE = environ.get('API_AUDIENCE', 'cofferShop')
 
 ## AuthError Exception
 '''
