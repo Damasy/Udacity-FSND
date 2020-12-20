@@ -16,9 +16,9 @@ CORS(app, resources={"/": {'origins': "*"}})
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Headers',
-                        'Content-Type,Authorization,true')
+                         'Content-Type,Authorization,true')
     response.headers.add('Access-Control-Allow-Methods',
-                        'GET,PATCH,POST,DELETE,OPTIONS')
+                         'GET,PATCH,POST,DELETE,OPTIONS')
     return response
 
 
@@ -35,7 +35,8 @@ def after_request(response):
     GET /drinks
         it should be a public endpoint
         it should contain only the drink.short() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
+    returns status code 200 and json {"success": True, "drinks": drinks}
+    where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
 
@@ -43,7 +44,7 @@ def after_request(response):
 @app.route('/drinks', methods=['GET'])
 def get_all_drinks():
     drinks = Drink.query.all()
-    
+
     if drinks is None:
         abort(400)
 
@@ -58,7 +59,8 @@ def get_all_drinks():
     GET /drinks-detail
         it should require the 'get:drinks-detail' permission
         it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
+    returns status code 200 and json {"success": True, "drinks": drinks}
+    where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
 
@@ -67,7 +69,7 @@ def get_all_drinks():
 @requires_auth('get:drinks-detail')
 def get_drinks_detail(jwt):
     drinks = Drink.query.all()
-    
+
     if drinks is None:
         abort(400)
 
@@ -83,7 +85,8 @@ def get_drinks_detail(jwt):
         it should create a new row in the drinks table
         it should require the 'post:drinks' permission
         it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
+    returns status code 200 and json {"success": True, "drinks": drink}
+    where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
 
@@ -120,7 +123,8 @@ def insert_drink(jwt):
         it should update the corresponding row for <id>
         it should require the 'patch:drinks' permission
         it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
+    returns status code 200 and json {"success": True, "drinks": drink}
+    where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
 
@@ -129,7 +133,7 @@ def insert_drink(jwt):
 @requires_auth('patch:drinks')
 def edit_drink(jwt, drink_id):
     req = request.get_json()
-    drink = Drink().query.filter_by(id=drink_id).one_or_none()
+    drink = Drink().query.filter_by(id == drink_id).one_or_none()
     if not drink:
         abort(404)
     try:
@@ -139,7 +143,7 @@ def edit_drink(jwt, drink_id):
             drink.title = req_title
 
         if req_recipe:
-            drink.recipe = json.dumps(req['recipe'])
+            drink.recipe = req['recipe'] if type(req['recipe']) == str else json.dumps(req['recipe'])
 
         drink.update()
     except:
@@ -154,7 +158,8 @@ def edit_drink(jwt, drink_id):
         it should respond with a 404 error if <id> is not found
         it should delete the corresponding row for <id>
         it should require the 'delete:drinks' permission
-    returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
+    returns status code 200 and json {"success": True, "delete": id}
+    where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
 
@@ -172,7 +177,7 @@ def delete_drink(jwt, drink_id):
     except:
         abort(400)
 
-    return jsonify({'success': True, 'delete': id}), 200
+    return jsonify({'success': True, 'delete': drink_id}), 200
 
 
 # Error Handling
