@@ -6,6 +6,8 @@ import random
 
 from models import setup_db, Question, Category
 
+from flasgger import Swagger
+
 QUESTIONS_PER_PAGE = 10
 
 
@@ -25,6 +27,7 @@ def paginate_questions(request, selection):
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
+    Swagger(app)
     setup_db(app)
 
     CORS(app, resources={"/": {'origins': "*"}})
@@ -36,6 +39,99 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Methods',
                              'GET,PATCH,POST,DELETE,OPTIONS')
         return response
+
+    @app.route('/colors/<palette>/')
+    def colors(palette):
+        """Example endpoint returning a list of colors by palette
+        This is using docstrings for specifications.
+        ---
+        parameters:
+        - name: palette
+            in: path
+            type: string
+            enum: ['all', 'rgb', 'cmyk']
+            required: true
+            default: all
+        definitions:
+        Palette:
+            type: object
+            properties:
+            palette_name:
+                type: array
+                items:
+                $ref: '#/definitions/Color'
+        Color:
+            type: string
+        responses:
+        200:
+            description: A list of colors (may be filtered by palette)
+            schema:
+            $ref: '#/definitions/Palette'
+            examples:
+            rgb: ['red', 'green', 'blue']
+        """
+        all_colors = {
+            'cmyk': ['cian', 'magenta', 'yellow', 'black'],
+            'rgb': ['red', 'green', 'blue']
+        }
+        if palette == 'all':
+            result = all_colors
+        else:
+            result = {palette: all_colors.get(palette)}
+
+        return jsonify(result)
+
+    @app.route('/api/<string:language>/', methods=['GET'])
+    def index(language):
+        """This is the language awesomeness API
+        Call this api passing a language name and get back its features
+        ---
+        tags:
+        - Awesomeness Language API
+        parameters:
+        - name: language
+            in: path
+            type: string
+            required: true
+            description: The language name
+        - name: size
+            in: query
+            type: integer
+            description: size of awesomeness
+        responses:
+        500:
+            description: Error The language is not awesome!
+        200:
+            description: A language with its awesomeness
+            schema:
+            id: awesome
+            properties:
+                language:
+                type: string
+                description: The language name
+                default: Lua
+                features:
+                type: array
+                description: The awesomeness list
+                items:
+                    type: string
+                default: ["perfect", "simple", "lovely"]
+
+        """
+
+        language = language.lower().strip()
+        features = [
+            "awesome", "great", "dynamic", 
+            "simple", "powerful", "amazing", 
+            "perfect", "beauty", "lovely"
+        ]
+        size = int(request.args.get('size', 1))
+        if language in ['php', 'vb', 'visualbasic', 'actionscript']:
+            return "An error occurred, invalid language for awesomeness", 500
+        return jsonify(
+            language=language,
+            features=random.sample(features, size)
+        )
 
     @app.route('/categories', methods=['GET'])
     def get_categories():
@@ -175,7 +271,7 @@ def create_app(test_config=None):
         previous_questions = request.get_json().get('previous_questions')
         quiz_category = request.get_json().get('quiz_category')
 
-        if ((quiz_category is '') or (previous_questions is '')):
+        if ((quiz_category == '') or (previous_questions == '')):
             abort(400)
 
         if (quiz_category['id'] == 0):
